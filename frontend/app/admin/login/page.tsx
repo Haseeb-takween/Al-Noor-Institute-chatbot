@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
 
     try {
       await adminLogin(password);
-      router.push("/admin");
+      router.replace("/admin");
     } catch (err) {
       const message =
         err instanceof AdminRequestError ? err.message : "Something went wrong. Please try again.";

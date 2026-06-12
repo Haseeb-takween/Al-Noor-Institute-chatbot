@@ -4,6 +4,7 @@ import express, { type Express, type NextFunction, type Request, type Response }
 import helmet from "helmet";
 import morgan from "morgan";
 import { env } from "./config/env";
+import { corsOptions } from "./config/cors";
 import { connectDB } from "./lib/db";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
@@ -11,13 +12,10 @@ import apiRouter from "./routes";
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+
 app.use(helmet());
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN.length > 0 ? env.CORS_ORIGIN : true,
-    credentials: true,
-  }),
-);
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());

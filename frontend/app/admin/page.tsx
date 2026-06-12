@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   AdminRequestError,
   adminLogout,
+  checkAdminSession,
   fetchAdminConversations,
   fetchAdminStats,
   type AdminConversationSummary,
@@ -33,6 +34,9 @@ export default function AdminDashboardPage() {
       setError(null);
 
       try {
+        await checkAdminSession();
+        if (cancelled) return;
+
         const [statsData, conversationsData] = await Promise.all([
           fetchAdminStats(),
           fetchAdminConversations(page),

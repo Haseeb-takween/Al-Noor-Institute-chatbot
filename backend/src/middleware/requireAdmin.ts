@@ -6,6 +6,18 @@ import { AppError } from "./errorHandler";
 export const ADMIN_SESSION_COOKIE = "admin_session";
 export const ADMIN_SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
+// Separate Vercel projects are always cross-site in production and need
+// SameSite=None + Secure. Localhost dev must stay Lax without Secure.
+const isProduction = env.NODE_ENV === "production";
+
+export const adminSessionCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+  path: "/",
+  maxAge: ADMIN_SESSION_MAX_AGE_MS,
+};
+
 export function requireAdmin(req: Request, _res: Response, next: NextFunction): void {
   const token = req.cookies?.[ADMIN_SESSION_COOKIE];
 

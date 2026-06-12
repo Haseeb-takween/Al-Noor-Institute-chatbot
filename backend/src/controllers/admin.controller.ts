@@ -6,7 +6,7 @@ import { env } from "../config/env";
 import { AppError } from "../middleware/errorHandler";
 import {
   ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_MAX_AGE_MS,
+  adminSessionCookieOptions,
 } from "../middleware/requireAdmin";
 import { ConversationModel } from "../models/conversation.model";
 
@@ -26,12 +26,7 @@ export function adminLogin(req: Request, res: Response, next: NextFunction): voi
       expiresIn: "24h",
     });
 
-    res.cookie(ADMIN_SESSION_COOKIE, token, {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: ADMIN_SESSION_MAX_AGE_MS,
-    });
+    res.cookie(ADMIN_SESSION_COOKIE, token, adminSessionCookieOptions);
 
     res.json({ status: "ok" });
   } catch (err) {
@@ -44,7 +39,7 @@ export function adminLogin(req: Request, res: Response, next: NextFunction): voi
 }
 
 export function adminLogout(_req: Request, res: Response): void {
-  res.clearCookie(ADMIN_SESSION_COOKIE);
+  res.clearCookie(ADMIN_SESSION_COOKIE, adminSessionCookieOptions);
   res.json({ status: "ok" });
 }
 
