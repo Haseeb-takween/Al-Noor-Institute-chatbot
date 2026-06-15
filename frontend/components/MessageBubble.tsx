@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import type { ChatMessage } from "@/lib/chat";
 
 export function MessageBubble({ message }: { message: ChatMessage }) {
@@ -9,13 +10,13 @@ export function MessageBubble({ message }: { message: ChatMessage }) {
         {isUser ? "you" : "ai"}
       </span>
       <div
-        className={`max-w-[80ch] whitespace-pre-wrap rounded-sm border px-4 py-3 text-sm leading-relaxed sm:max-w-[65ch] ${
+        className={`max-w-[80ch] rounded-sm border px-4 py-3 text-sm leading-relaxed sm:max-w-[65ch] ${
           isUser
-            ? "border-accent-dim bg-accent/5 text-foreground"
-            : "border-border bg-surface text-foreground"
+            ? "whitespace-pre-wrap border-accent-dim bg-accent/5 text-foreground"
+            : "border-border bg-surface text-foreground [&>*]:my-2 first:[&>*]:mt-0 last:[&>*]:mb-0 [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-5 [&_ol]:pl-5 [&_strong]:font-semibold [&_code]:rounded-sm [&_code]:bg-accent/10 [&_code]:px-1 [&_code]:py-0.5"
         }`}
       >
-        {message.content}
+        {isUser ? message.content : <ReactMarkdown>{message.content}</ReactMarkdown>}
       </div>
     </div>
   );
