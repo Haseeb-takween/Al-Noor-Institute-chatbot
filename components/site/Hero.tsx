@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo, Icon, ArrowRight, Check, Sparkle } from "./Icons";
 import { Reveal } from "./Reveal";
 
@@ -46,13 +47,13 @@ export function Hero() {
 
           <Reveal delay={240}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="/enrol" className="btn btn-gold">
+              <Link href="/enrol" className="btn btn-gold">
                 Book a free trial
                 <ArrowRight className="h-4 w-4" />
-              </a>
-              <a href="#courses" className="btn btn-ghost">
+              </Link>
+              <Link href="/#courses" className="btn btn-ghost">
                 Explore courses
-              </a>
+              </Link>
             </div>
           </Reveal>
 

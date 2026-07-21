@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { courses, discounts } from "@/lib/site-data";
 import { Icon, Check, ArrowRight } from "./Icons";
 import { Reveal } from "./Reveal";
@@ -73,13 +74,13 @@ export function Pricing() {
                   One-to-one classes are available for every subject at double the
                   group rate. Ask us to arrange it.
                 </p>
-                <a
-                  href="#contact"
+                <Link
+                  href="/#contact"
                   className="mt-4 inline-flex items-center gap-1.5 text-[0.86rem] font-semibold text-gold-bright"
                 >
                   Talk to us
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </Link>
               </div>
             </Reveal>
           </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
-import { ChatWidget } from "@/components/chat/ChatWidget";
+import { ChatWidgetLazy } from "@/components/chat/ChatWidgetLazy";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -51,7 +51,7 @@ export default function RootLayout({
     >
       <body>
         {children}
-        <ChatWidget />
+        <ChatWidgetLazy />
       </body>
     </html>
   );

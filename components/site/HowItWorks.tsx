@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { steps } from "@/lib/site-data";
 import { ArrowRight } from "./Icons";
 import { Reveal } from "./Reveal";
@@ -35,10 +36,10 @@ export function HowItWorks() {
         </div>
 
         <Reveal className="mt-14 flex justify-center">
-          <a href="/enrol" className="btn btn-navy">
+          <Link href="/enrol" className="btn btn-navy">
             Start with a free trial
             <ArrowRight className="h-4 w-4 text-gold-bright" />
-          </a>
+          </Link>
         </Reveal>
       </div>
     </section>

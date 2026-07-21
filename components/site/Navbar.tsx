@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { navLinks, courses } from "@/lib/site-data";
 import { Logo, Icon, ArrowRight, Menu, Close, Chevron } from "./Icons";
 
@@ -29,7 +30,7 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-5 lg:px-8">
-        <a href="/" className="group flex min-w-0 items-center gap-2 sm:gap-2.5">
+        <Link href="/" className="group flex min-w-0 items-center gap-2 sm:gap-2.5">
           <Logo className="h-8 w-8 shrink-0 transition-transform duration-500 group-hover:rotate-45 sm:h-9 sm:w-9" />
           <span className="flex min-w-0 flex-col leading-none">
             <span className="font-display text-[0.95rem] font-semibold text-ink sm:text-[1.15rem]">
@@ -39,7 +40,7 @@ export function Navbar() {
               Online Islamic Education
             </span>
           </span>
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => {
@@ -51,7 +52,7 @@ export function Navbar() {
                 onMouseEnter={() => isCourses && setCoursesOpen(true)}
                 onMouseLeave={() => isCourses && setCoursesOpen(false)}
               >
-                <a
+                <Link
                   href={link.href}
                   className="group inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[0.92rem] font-medium text-ink/80 transition-colors hover:text-gold-deep"
                 >
@@ -64,7 +65,7 @@ export function Navbar() {
                     />
                   )}
                   <span className="pointer-events-none absolute inset-x-3.5 bottom-1 h-px origin-left scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100" />
-                </a>
+                </Link>
 
                 {isCourses && (
                   <div
@@ -77,7 +78,7 @@ export function Navbar() {
                     <div className="overflow-hidden rounded-2xl border border-line bg-white p-3 shadow-[0_24px_60px_rgba(10,31,68,0.16)]">
                       <div className="grid grid-cols-2 gap-1.5">
                         {courses.map((c) => (
-                          <a
+                          <Link
                             key={c.id}
                             href="/#courses"
                             className="group/item flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-paper"
@@ -93,10 +94,10 @@ export function Navbar() {
                                 {c.duration} · {c.price}
                               </span>
                             </span>
-                          </a>
+                          </Link>
                         ))}
                       </div>
-                      <a
+                      <Link
                         href="/enrol"
                         className="mt-1.5 flex items-center justify-between rounded-xl bg-navy px-4 py-3 text-white transition-colors hover:bg-navy-soft"
                       >
@@ -104,7 +105,7 @@ export function Navbar() {
                           Book a free trial class — no obligation
                         </span>
                         <ArrowRight className="h-4 w-4 text-gold-bright" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -116,10 +117,10 @@ export function Navbar() {
         <div className="flex items-center gap-2.5">
           {/* Wrapper hides Enrol when hamburger shows — .btn sets display and overrides Tailwind `hidden`. */}
           <div className="hidden lg:block">
-            <a href="/enrol" className="btn btn-gold text-[0.85rem]">
+            <Link href="/enrol" className="btn btn-gold text-[0.85rem]">
               Enrol Now
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
           <button
             type="button"
@@ -140,21 +141,25 @@ export function Navbar() {
         <ul className="flex flex-col gap-1 px-5 py-4">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center justify-between rounded-xl px-4 py-3 text-[0.98rem] font-medium text-ink transition-colors hover:bg-paper"
               >
                 {link.label}
                 <ArrowRight className="h-4 w-4 text-muted" />
-              </a>
+              </Link>
             </li>
           ))}
           <li className="mt-2">
-            <a href="/enrol" className="btn btn-gold w-full" onClick={() => setMobileOpen(false)}>
+            <Link
+              href="/enrol"
+              className="btn btn-gold w-full"
+              onClick={() => setMobileOpen(false)}
+            >
               Enrol Now
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

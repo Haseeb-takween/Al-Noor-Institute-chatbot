@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { courses } from "@/lib/site-data";
 import { Icon, ArrowRight, Check } from "./Icons";
 import { Reveal } from "./Reveal";
@@ -53,13 +54,13 @@ export function Courses() {
                   <span className="font-display text-lg font-semibold text-ink">{course.price}</span>
                 </div>
 
-                <a
-                  href="#fees"
+                <Link
+                  href="/#fees"
                   className="mt-5 inline-flex items-center gap-1.5 text-[0.86rem] font-semibold text-gold-deep transition-colors hover:text-navy"
                 >
                   View details
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </a>
+                </Link>
               </article>
             </Reveal>
           ))}
@@ -75,10 +76,10 @@ export function Courses() {
                   your teacher, and find your level.
                 </p>
               </div>
-              <a href="/enrol" className="btn btn-gold relative mt-6 self-start">
+              <Link href="/enrol" className="btn btn-gold relative mt-6 self-start">
                 Book my free class
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </article>
           </Reveal>
         </div>

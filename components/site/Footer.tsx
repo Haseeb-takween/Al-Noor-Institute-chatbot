@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { institute, navLinks, courses } from "@/lib/site-data";
 import { Logo, Mail, Phone, ArrowRight, Sparkle, Lock as LockIcon } from "./Icons";
 import { Reveal } from "./Reveal";
@@ -26,10 +27,10 @@ export function Footer() {
                 no obligation to continue.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <a href="/enrol" className="btn bg-navy text-white hover:bg-navy-soft">
+                <Link href="/enrol" className="btn bg-navy text-white hover:bg-navy-soft">
                   Enrol now
                   <ArrowRight className="h-4 w-4 text-gold-bright" />
-                </a>
+                </Link>
                 <a
                   href={`tel:${institute.phone.replace(/\s/g, "")}`}
                   className="btn bg-white/85 text-navy hover:bg-white"
@@ -46,10 +47,10 @@ export function Footer() {
       {/* main footer */}
       <div className="mx-auto grid max-w-6xl gap-10 px-5 pt-16 pb-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:px-8">
         <div>
-          <a href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <Logo className="h-9 w-9" />
             <span className="font-display text-lg font-semibold text-white">Al-Noor Institute</span>
-          </a>
+          </Link>
           <p className="mt-4 max-w-xs text-[0.9rem] leading-relaxed text-on-navy-muted">
             A UK-based online Islamic education provider. Quran, Arabic, Islamic
             Studies, Seerah and Hifz — taught live with care.
@@ -61,9 +62,12 @@ export function Footer() {
           <ul className="mt-4 flex flex-col gap-2.5">
             {navLinks.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="text-[0.9rem] text-on-navy-muted transition-colors hover:text-white">
+                <Link
+                  href={l.href}
+                  className="text-[0.9rem] text-on-navy-muted transition-colors hover:text-white"
+                >
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -74,9 +78,12 @@ export function Footer() {
           <ul className="mt-4 flex flex-col gap-2.5">
             {courses.map((c) => (
               <li key={c.id}>
-                <a href="/#courses" className="text-[0.9rem] text-on-navy-muted transition-colors hover:text-white">
+                <Link
+                  href="/#courses"
+                  className="text-[0.9rem] text-on-navy-muted transition-colors hover:text-white"
+                >
                   {c.name.replace(" — Life of the Prophet ﷺ", "")}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -114,13 +121,13 @@ export function Footer() {
           <span>© {new Date().getFullYear()} Al-Noor Institute. All rights reserved.</span>
           <div className="flex items-center gap-4">
             <span>Made with care for seekers of knowledge</span>
-            <a
+            <Link
               href="/admin/login"
               className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 text-[0.75rem] text-on-navy-muted transition-colors hover:border-gold-bright/50 hover:text-gold-bright"
             >
               <LockIcon className="h-3 w-3" />
               Staff sign in
-            </a>
+            </Link>
           </div>
         </div>
       </div>
