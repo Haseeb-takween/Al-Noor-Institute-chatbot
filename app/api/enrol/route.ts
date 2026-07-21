@@ -59,11 +59,14 @@ export async function POST(req: Request) {
       return json({ ok: true, id: saved._id.toString(), persisted: true }, 201);
     } catch (err) {
       console.error("Enrolment save error:", err);
+      return fail(
+        "We couldn't save your request. Please try again or call 0800 123 4567.",
+        502,
+      );
     }
-  } else {
-    console.warn("Enrolment accepted but not persisted (DB unreachable):", record);
   }
 
-  // Still succeed for the visitor — admin will see it once Atlas allows Vercel IPs.
+  console.warn("Enrolment accepted but not persisted (DB unreachable):", record);
+  // DB unreachable (e.g. Atlas IP) — accept for UX; admin won't see it until DB is reachable.
   return json({ ok: true, id: null, persisted: false }, 201);
 }

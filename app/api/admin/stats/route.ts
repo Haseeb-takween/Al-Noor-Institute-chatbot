@@ -24,11 +24,11 @@ export async function GET(req: Request) {
   }
 
   const [totalConversations, messageAgg, totalEnrolments] = await Promise.all([
-    ConversationModel.countDocuments(),
+    ConversationModel.estimatedDocumentCount(),
     ConversationModel.aggregate<{ totalMessages: number }>([
       { $group: { _id: null, totalMessages: { $sum: { $size: { $ifNull: ["$messages", []] } } } } },
     ]),
-    EnrolmentModel.countDocuments(),
+    EnrolmentModel.estimatedDocumentCount(),
   ]);
 
   return json({
