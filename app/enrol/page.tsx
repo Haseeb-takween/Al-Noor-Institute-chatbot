@@ -28,12 +28,37 @@ export default function EnrolPage() {
   const [teacherPreference, setTeacherPreference] = useState<Pref>("either");
   const [notes, setNotes] = useState("");
 
-  const canStep0 = course !== "";
-  const canStep1 =
-    fullName.trim() !== "" &&
-    /^\S+@\S+\.\S+$/.test(email) &&
-    phone.trim() !== "" &&
-    (forWhom === "self" || studentName.trim() !== "");
+  function step0Hint(): string | null {
+    if (!course) return "Please select a programme to continue.";
+    return null;
+  }
+
+  function step1Hint(): string | null {
+    if (!fullName.trim()) return "Please enter your full name.";
+    if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email address.";
+    if (!phone.trim()) return "Please enter a phone number.";
+    if (forWhom === "child" && !studentName.trim()) return "Please enter your child's name.";
+    return null;
+  }
+
+  function goNext() {
+    setError(null);
+    if (step === 0) {
+      const hint = step0Hint();
+      if (hint) {
+        setError(hint);
+        return;
+      }
+    }
+    if (step === 1) {
+      const hint = step1Hint();
+      if (hint) {
+        setError(hint);
+        return;
+      }
+    }
+    setStep((s) => s + 1);
+  }
 
   async function submit() {
     setSubmitting(true);
@@ -130,7 +155,7 @@ export default function EnrolPage() {
                       })}
                     </div>
 
-                    <Field label="Your current level">
+                    <Field label="Your current level" optional>
                       <div className="flex flex-wrap gap-2">
                         {["Complete beginner", "Beginner", "Intermediate", "Advanced", "Not sure"].map((l) => (
                           <Chip key={l} active={level === l} onClick={() => setLevel(l)}>
@@ -166,23 +191,23 @@ export default function EnrolPage() {
 
                     {forWhom === "child" && (
                       <div className="grid gap-4 sm:grid-cols-2">
-                        <Field label="Child's name">
+                        <Field label="Child's name" required>
                           <Input value={studentName} onChange={setStudentName} placeholder="Student's full name" />
                         </Field>
-                        <Field label="Child's age">
+                        <Field label="Child's age" optional>
                           <Input value={studentAge} onChange={setStudentAge} placeholder="e.g. 8" />
                         </Field>
                       </div>
                     )}
 
-                    <Field label={forWhom === "child" ? "Parent / guardian name" : "Full name"}>
+                    <Field label={forWhom === "child" ? "Parent / guardian name" : "Full name"} required>
                       <Input value={fullName} onChange={setFullName} placeholder="Your full name" />
                     </Field>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <Field label="Email address">
+                      <Field label="Email address" required>
                         <Input value={email} onChange={setEmail} type="email" placeholder="you@example.com" />
                       </Field>
-                      <Field label="Phone number">
+                      <Field label="Phone number" required>
                         <Input value={phone} onChange={setPhone} placeholder="Mobile or landline" />
                       </Field>
                     </div>
@@ -191,7 +216,7 @@ export default function EnrolPage() {
 
                 {step === 2 && (
                   <Section title="A few preferences">
-                    <Field label="Preferred class times">
+                    <Field label="Preferred class times" optional>
                       <div className="flex flex-wrap gap-2">
                         {times.map((t) => (
                           <Chip key={t} active={preferredTime === t} onClick={() => setPreferredTime(t)}>
@@ -201,7 +226,7 @@ export default function EnrolPage() {
                       </div>
                     </Field>
 
-                    <Field label="Teacher preference">
+                    <Field label="Teacher preference" optional>
                       <div className="flex flex-wrap gap-2">
                         {(
                           [
@@ -217,7 +242,7 @@ export default function EnrolPage() {
                       </div>
                     </Field>
 
-                    <Field label="Anything else? (optional)">
+                    <Field label="Anything else?" optional>
                       <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
@@ -252,9 +277,8 @@ export default function EnrolPage() {
                   {step < 2 ? (
                     <button
                       type="button"
-                      onClick={() => setStep((s) => s + 1)}
-                      disabled={(step === 0 && !canStep0) || (step === 1 && !canStep1)}
-                      className="btn btn-gold disabled:cursor-not-allowed disabled:opacity-40"
+                      onClick={goNext}
+                      className="btn btn-gold"
                     >
                       Continue
                       <ArrowRight className="h-4 w-4" />
@@ -322,10 +346,24 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+  required,
+  optional,
+}: {
+  label: string;
+  children: React.ReactNode;
+  required?: boolean;
+  optional?: boolean;
+}) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="text-[0.78rem] font-medium uppercase tracking-[0.1em] text-gold-deep">{label}</span>
+      <span className="text-[0.78rem] font-medium uppercase tracking-[0.1em] text-gold-deep">
+        {label}
+        {required && <span className="text-red-600"> *</span>}
+        {optional && <span className="normal-case tracking-normal text-muted"> (optional)</span>}
+      </span>
       {children}
     </label>
   );

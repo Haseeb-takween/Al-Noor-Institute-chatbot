@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 /**
  * Cached mongoose connection for Next.js / Vercel serverless.
- * Avoid minPoolSize — it stalls cold starts on Hobby timeouts.
+ * Short timeouts = fail fast when Atlas IP allowlist blocks Vercel (no long hangs).
  */
 declare global {
   // eslint-disable-next-line no-var
@@ -11,9 +11,10 @@ declare global {
 
 const CONNECT_OPTS: mongoose.ConnectOptions = {
   maxPoolSize: 5,
-  serverSelectionTimeoutMS: 4_000,
-  socketTimeoutMS: 20_000,
-  connectTimeoutMS: 4_000,
+  // Keep short so a blocked Atlas IP never stalls chat/enrol/admin for 10s+.
+  serverSelectionTimeoutMS: 2_500,
+  socketTimeoutMS: 10_000,
+  connectTimeoutMS: 2_500,
   bufferCommands: false,
 };
 
@@ -42,18 +43,11 @@ export async function connectDB(): Promise<typeof mongoose> {
 
 /** Connects but never throws — returns whether a DB connection is available. */
 export async function connectDBSafe(): Promise<boolean> {
-  if (!isDbConfigured()) return false;
-  try {
-    await connectDB();
-    return mongoose.connection.readyState === 1;
-  } catch (err) {
-    console.error("MongoDB connection failed:", err);
-    return false;
-  }
+  return connectDBQuick(2_500);
 }
 
-/** Like connectDBSafe, but gives up after `ms` so chat never blocks on Atlas. */
-export async function connectDBQuick(ms = 3_000): Promise<boolean> {
+/** Give up after `ms` so user-facing routes stay fast if Atlas is unreachable. */
+export async function connectDBQuick(ms = 2_000): Promise<boolean> {
   if (!isDbConfigured()) return false;
   try {
     const result = await Promise.race([
@@ -62,7 +56,7 @@ export async function connectDBQuick(ms = 3_000): Promise<boolean> {
     ]);
     return result;
   } catch (err) {
-    console.error("MongoDB quick connect failed:", err);
+    console.error("MongoDB connection failed:", err);
     return false;
   }
 }

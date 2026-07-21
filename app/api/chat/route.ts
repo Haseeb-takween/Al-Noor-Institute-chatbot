@@ -1,5 +1,6 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { streamText } from "ai";
+import { after } from "next/server";
 import { FULL_SYSTEM_PROMPT } from "@/lib/server/prompt";
 import { isValidObjectId } from "@/lib/server/http";
 
@@ -43,48 +44,46 @@ function newObjectIdHex(): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-/** Persist after the stream — never blocks first tokens. Lazy-imports DB. */
-function persistTranscript(
+/** Persist after the response — kept alive on Vercel via `after()`. */
+async function persistTranscript(
   conversationId: string,
   messages: ChatMessage[],
   assistantText: string,
-): void {
+) {
   if (!process.env.MONGODB_URI || !assistantText) return;
 
-  void (async () => {
-    try {
-      const { connectDBQuick } = await import("@/lib/server/db");
-      const { ConversationModel } = await import("@/lib/server/models");
+  try {
+    const { connectDBQuick } = await import("@/lib/server/db");
+    const { ConversationModel } = await import("@/lib/server/models");
 
-      const ready = await connectDBQuick(3_000);
-      if (!ready) {
-        console.warn("Skip chat persist — Mongo not ready in time");
-        return;
-      }
-
-      const now = new Date();
-      const firstUser = messages.find((m) => m.role === "user");
-      await ConversationModel.findOneAndUpdate(
-        { _id: conversationId },
-        {
-          $set: {
-            title: makeTitle(firstUser?.content ?? "New conversation"),
-            messages: [
-              ...messages.map((m) => ({
-                role: m.role,
-                content: m.content,
-                timestamp: now,
-              })),
-              { role: "assistant", content: assistantText, timestamp: new Date() },
-            ],
-          },
-        },
-        { upsert: true },
-      );
-    } catch (err) {
-      console.error("Conversation save error:", err);
+    const ready = await connectDBQuick(2_000);
+    if (!ready) {
+      console.warn("Skip chat persist — Mongo not ready in time");
+      return;
     }
-  })();
+
+    const now = new Date();
+    const firstUser = messages.find((m) => m.role === "user");
+    await ConversationModel.findOneAndUpdate(
+      { _id: conversationId },
+      {
+        $set: {
+          title: makeTitle(firstUser?.content ?? "New conversation"),
+          messages: [
+            ...messages.map((m) => ({
+              role: m.role,
+              content: m.content,
+              timestamp: now,
+            })),
+            { role: "assistant", content: assistantText, timestamp: new Date() },
+          ],
+        },
+      },
+      { upsert: true },
+    );
+  } catch (err) {
+    console.error("Conversation save error:", err);
+  }
 }
 
 export async function POST(req: Request) {
@@ -121,11 +120,9 @@ export async function POST(req: Request) {
       system: FULL_SYSTEM_PROMPT,
       messages,
       temperature: 0.3,
-      // Prefer short replies — faster completion, better UX.
       maxOutputTokens: 800,
       async onFinish({ text }) {
-        // Fire-and-forget — do not await Mongo (was delaying stream end).
-        persistTranscript(conversationId, messages, text);
+        after(() => persistTranscript(conversationId, messages, text));
       },
     });
 

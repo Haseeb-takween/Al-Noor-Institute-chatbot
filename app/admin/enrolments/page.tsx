@@ -89,7 +89,7 @@ export default function AdminEnrolmentsPage() {
           <div className="card p-10 text-center">
             <p className="text-[0.95rem] text-body">No enrolment requests yet.</p>
             <p className="mt-1 text-[0.82rem] text-muted">
-              New submissions from the enrolment form will appear here (requires MONGODB_URI).
+              New submissions from the enrolment form will appear here.
             </p>
           </div>
         )}

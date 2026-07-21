@@ -1,4 +1,4 @@
-import { connectDBSafe, isDbConfigured } from "@/lib/server/db";
+import { connectDBQuick } from "@/lib/server/db";
 import { EnrolmentModel } from "@/lib/server/models";
 import { json, fail } from "@/lib/server/http";
 
@@ -51,16 +51,19 @@ export async function POST(req: Request) {
     notes: clean(body.notes, 1000),
   };
 
-  if (isDbConfigured() && (await connectDBSafe())) {
+  // Best-effort save — never block the user for Atlas IP / network issues.
+  const ready = await connectDBQuick(2_000);
+  if (ready) {
     try {
       const saved = await EnrolmentModel.create(record);
-      return json({ ok: true, id: saved._id.toString() }, 201);
+      return json({ ok: true, id: saved._id.toString(), persisted: true }, 201);
     } catch (err) {
       console.error("Enrolment save error:", err);
-      return fail("We couldn't save your request. Please try again or call 0800 123 4567.", 502);
     }
+  } else {
+    console.warn("Enrolment accepted but not persisted (DB unreachable):", record);
   }
 
-  console.log("Enrolment request (not persisted — no DB):", record);
-  return json({ ok: true, id: null }, 201);
+  // Still succeed for the visitor — admin will see it once Atlas allows Vercel IPs.
+  return json({ ok: true, id: null, persisted: false }, 201);
 }

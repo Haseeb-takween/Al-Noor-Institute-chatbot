@@ -1,5 +1,5 @@
 import { isAdminRequest } from "@/lib/server/auth";
-import { connectDBSafe } from "@/lib/server/db";
+import { connectDBSafe, isDbConfigured } from "@/lib/server/db";
 import { ConversationModel } from "@/lib/server/models";
 import { json, fail } from "@/lib/server/http";
 
@@ -15,8 +15,18 @@ export async function GET(req: Request) {
     Math.max(1, parseInt(url.searchParams.get("limit") ?? "20", 10) || 20),
   );
 
+  if (!isDbConfigured()) {
+    return fail(
+      "Database is not configured. Set MONGODB_URI on Vercel and redeploy.",
+      503,
+    );
+  }
+
   if (!(await connectDBSafe())) {
-    return json({ conversations: [], page, limit, total: 0, totalPages: 1 });
+    return fail(
+      "MongoDB unreachable (often Atlas Network Access). Allow 0.0.0.0/0 so admin can load data.",
+      503,
+    );
   }
 
   const skip = (page - 1) * limit;

@@ -1,5 +1,5 @@
 import { isAdminRequest } from "@/lib/server/auth";
-import { connectDBSafe } from "@/lib/server/db";
+import { connectDBSafe, isDbConfigured } from "@/lib/server/db";
 import { EnrolmentModel } from "@/lib/server/models";
 import { json, fail } from "@/lib/server/http";
 
@@ -7,9 +7,21 @@ export const runtime = "nodejs";
 
 export async function GET(req: Request) {
   if (!isAdminRequest(req)) return fail("Admin authentication required", 401);
-  if (!(await connectDBSafe())) return json({ enrolments: [] });
 
-  // Only fields the admin table needs — skip unused payload over Atlas.
+  if (!isDbConfigured()) {
+    return fail(
+      "Database is not configured. Set MONGODB_URI on Vercel and redeploy.",
+      503,
+    );
+  }
+
+  if (!(await connectDBSafe())) {
+    return fail(
+      "MongoDB unreachable (often Atlas Network Access). Allow 0.0.0.0/0 so admin can load data.",
+      503,
+    );
+  }
+
   const enrolments = await EnrolmentModel.find()
     .sort({ createdAt: -1 })
     .limit(100)
