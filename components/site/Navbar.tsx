@@ -114,10 +114,13 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2.5">
-          <a href="/enrol" className="btn btn-gold hidden text-[0.85rem] lg:inline-flex">
-            Enrol Now
-            <ArrowRight className="h-4 w-4" />
-          </a>
+          {/* Wrapper hides Enrol when hamburger shows — .btn sets display and overrides Tailwind `hidden`. */}
+          <div className="hidden lg:block">
+            <a href="/enrol" className="btn btn-gold text-[0.85rem]">
+              Enrol Now
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
