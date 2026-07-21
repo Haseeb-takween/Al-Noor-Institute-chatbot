@@ -183,7 +183,11 @@ No — the chatbot can only provide information. Visit the website or call to en
 **What if I ask the chatbot something it does not know?**
 The chatbot will say it doesn't have that information and direct the user to contact Al-Noor Institute directly at info@alnoorinstitute.co.uk or 0800 123 4567.`;
 
-/** The complete system instruction: prompt + knowledge base. */
+/** The complete system instruction: prompt + knowledge base (built once at module load). */
+export const FULL_SYSTEM_PROMPT =
+  SYSTEM_PROMPT + "\n\n# Knowledge Base\n\n" + KNOWLEDGE_BASE;
+
+/** @deprecated Prefer FULL_SYSTEM_PROMPT — kept for callers that used the function form. */
 export function getSystemPrompt(): string {
-  return SYSTEM_PROMPT + "\n\n# Knowledge Base\n\n" + KNOWLEDGE_BASE;
+  return FULL_SYSTEM_PROMPT;
 }

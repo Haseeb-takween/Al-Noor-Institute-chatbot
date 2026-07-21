@@ -9,7 +9,14 @@ export async function GET(req: Request) {
   if (!isAdminRequest(req)) return fail("Admin authentication required", 401);
   if (!(await connectDBSafe())) return json({ enrolments: [] });
 
-  const enrolments = await EnrolmentModel.find().sort({ createdAt: -1 }).limit(200).lean();
+  // Only fields the admin table needs — skip unused payload over Atlas.
+  const enrolments = await EnrolmentModel.find()
+    .sort({ createdAt: -1 })
+    .limit(100)
+    .select(
+      "course level fullName email phone studentName studentAge isChild preferredTime teacherPreference notes status createdAt",
+    )
+    .lean();
 
   return json({
     enrolments: enrolments.map((e) => ({

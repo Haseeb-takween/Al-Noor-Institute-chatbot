@@ -10,13 +10,13 @@ export async function GET(req: Request) {
   if (!(await connectDBSafe()))
     return json({ totalConversations: 0, totalMessages: 0, totalEnrolments: 0 });
 
+  // Count messages via $size without shipping message content over the wire.
   const [totalConversations, messageAgg, totalEnrolments] = await Promise.all([
-    ConversationModel.countDocuments(),
+    ConversationModel.estimatedDocumentCount(),
     ConversationModel.aggregate<{ totalMessages: number }>([
-      { $project: { messageCount: { $size: "$messages" } } },
-      { $group: { _id: null, totalMessages: { $sum: "$messageCount" } } },
+      { $group: { _id: null, totalMessages: { $sum: { $size: { $ifNull: ["$messages", []] } } } } },
     ]),
-    EnrolmentModel.countDocuments(),
+    EnrolmentModel.estimatedDocumentCount(),
   ]);
 
   return json({

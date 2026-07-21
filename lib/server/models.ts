@@ -19,6 +19,8 @@ const conversationSchema = new Schema(
   { timestamps: true },
 );
 
+conversationSchema.index({ updatedAt: -1 });
+
 export type ConversationMessage = InferSchemaType<typeof messageSchema>;
 export type Conversation = InferSchemaType<typeof conversationSchema>;
 
@@ -53,6 +55,8 @@ const enrolmentSchema = new Schema(
   },
   { timestamps: true },
 );
+
+enrolmentSchema.index({ createdAt: -1 });
 
 export type Enrolment = InferSchemaType<typeof enrolmentSchema>;
 

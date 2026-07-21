@@ -20,13 +20,28 @@ export async function GET(req: Request) {
   }
 
   const skip = (page - 1) * limit;
+
+  // Project messageCount with $size — never pull full message bodies for the list.
   const [conversations, total] = await Promise.all([
-    ConversationModel.find()
-      .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .select("title createdAt updatedAt messages")
-      .lean(),
+    ConversationModel.aggregate<{
+      _id: unknown;
+      title: string;
+      createdAt: Date;
+      updatedAt: Date;
+      messageCount: number;
+    }>([
+      { $sort: { updatedAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $project: {
+          title: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          messageCount: { $size: { $ifNull: ["$messages", []] } },
+        },
+      },
+    ]),
     ConversationModel.countDocuments(),
   ]);
 
@@ -36,7 +51,7 @@ export async function GET(req: Request) {
       title: c.title,
       createdAt: c.createdAt,
       updatedAt: c.updatedAt,
-      messageCount: (c.messages ?? []).length,
+      messageCount: c.messageCount,
     })),
     page,
     limit,
