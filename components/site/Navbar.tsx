@@ -29,13 +29,13 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-5 lg:px-8">
-        <a href="/" className="group flex items-center gap-2.5">
-          <Logo className="h-9 w-9 transition-transform duration-500 group-hover:rotate-45" />
-          <span className="flex flex-col leading-none">
-            <span className="font-display text-[1.15rem] font-semibold text-ink">
+        <a href="/" className="group flex min-w-0 items-center gap-2 sm:gap-2.5">
+          <Logo className="h-8 w-8 shrink-0 transition-transform duration-500 group-hover:rotate-45 sm:h-9 sm:w-9" />
+          <span className="flex min-w-0 flex-col leading-none">
+            <span className="font-display text-[0.95rem] font-semibold text-ink sm:text-[1.15rem]">
               Al-Noor <span className="text-gold-grad">Institute</span>
             </span>
-            <span className="mt-0.5 text-[0.62rem] uppercase tracking-[0.2em] text-muted">
+            <span className="mt-0.5 hidden text-[0.62rem] uppercase tracking-[0.2em] text-muted sm:block">
               Online Islamic Education
             </span>
           </span>
@@ -114,7 +114,7 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2.5">
-          <a href="/enrol" className="btn btn-gold hidden text-[0.85rem] sm:inline-flex">
+          <a href="/enrol" className="btn btn-gold hidden text-[0.85rem] lg:inline-flex">
             Enrol Now
             <ArrowRight className="h-4 w-4" />
           </a>
