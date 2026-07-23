@@ -82,11 +82,13 @@ body {
   color: var(--navy-deep);
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--font-display), Georgia, serif;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-  font-weight: 500;
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display), Georgia, serif;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
 }
 
 .eyebrow {
@@ -263,4 +265,13 @@ h1, h2, h3, h4 {
   padding: 0.05rem 0.35rem;
   border-radius: 0.3rem;
   font-size: 0.85em;
+}
+
+.legal-prose a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-prose a:hover {
+  color: var(--gold-deep);
 }

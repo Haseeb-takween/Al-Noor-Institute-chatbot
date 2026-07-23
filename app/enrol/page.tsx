@@ -457,7 +457,15 @@ function SlimFooter() {
           <Logo className="h-6 w-6" />
           <span className="font-display font-semibold text-ink">Al-Noor Institute</span>
         </Link>
-        <span>© {new Date().getFullYear()} · Fully online · United Kingdom</span>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link href="/privacy" className="hover:text-ink">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="hover:text-ink">
+            Terms &amp; Conditions
+          </Link>
+          <span>© {new Date().getFullYear()}</span>
+        </div>
       </div>
     </footer>
   );

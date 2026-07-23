@@ -119,8 +119,19 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-6 text-[0.8rem] text-on-navy-muted sm:flex-row lg:px-8">
           <span>© {new Date().getFullYear()} Al-Noor Institute. All rights reserved.</span>
-          <div className="flex items-center gap-4">
-            <span>Made with care for seekers of knowledge</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-white"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="transition-colors hover:text-white"
+            >
+              Terms &amp; Conditions
+            </Link>
             <Link
               href="/admin/login"
               className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 text-[0.75rem] text-on-navy-muted transition-colors hover:border-gold-bright/50 hover:text-gold-bright"
